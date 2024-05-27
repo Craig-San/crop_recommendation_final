@@ -1,0 +1,262 @@
+import pickle
+import streamlit as st 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import openai
+import os
+import hmac
+
+# Authentication
+def check_password():
+    """Returns `True` if the user had a correct password."""
+
+    def login_form():
+        """Form with widgets to collect user information"""
+        with st.form("Credentials"):
+            st.text_input("Username", key="username")
+            st.text_input("Password", type="password", key="password")
+            st.form_submit_button("Log in", on_click=password_entered)
+
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["username"] in st.secrets[
+            "passwords"
+        ] and hmac.compare_digest(
+            st.session_state["password"],
+            st.secrets.passwords[st.session_state["username"]],
+        ):
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Don't store the username or password.
+            del st.session_state["username"]
+        else:
+            st.session_state["password_correct"] = False
+
+    # Return True if the username + password is validated.
+    if st.session_state.get("password_correct", False):
+        return True
+
+    # Show inputs for username + password.
+    login_form()
+    if "password_correct" in st.session_state:
+        st.error("😕 User not known or password incorrect")
+    return False
+
+if not check_password():
+    st.stop()
+
+# Main Streamlit app starts here
+
+# Load the data
+data = pd.read_csv("Crop_recommendation.csv")
+grouped = data.groupby(by='label').mean().reset_index()
+crop_labels = data['label'].unique()
+
+# Load the models and encoders
+rf_classifier = pickle.load(open("rf_classifier_model.pkl", 'rb'))
+xgb_classifier = pickle.load(open("xgb_classifier_model.pkl", 'rb'))
+encoder = pickle.load(open("label_encoder.pkl", 'rb'))
+models = [rf_classifier, xgb_classifier]
+
+st.set_page_config(
+    page_title = 'Crop Recommendation',
+    page_icon = '✅',
+    layout = 'wide'
+    )
+
+# Summary statistics for each crop
+def summary(crop):
+    x = data[data['label'] == crop]
+    nitrogen, phosp = st.columns(2)
+    with nitrogen:
+        st.subheader("Nitrogen")
+        st.write("- Minimum Nitrogen required:", x['N'].min())
+        st.write("- Average Nitrogen required:", x['N'].mean())
+        st.write("- Maximum Nitrogen required:", x['N'].max())
+    with phosp:
+        st.subheader("Phosphorus")
+        st.write("- Minimum Phosphorus required:", x['P'].min())
+        st.write("- Average Phosphorus required:", x['P'].mean())
+        st.write("- Maximum Phosphorus required:", x['P'].max())
+    st.write("---------------------------------------------")
+    potas, temp = st.columns(2)
+    with potas:
+        st.subheader("Potassium")
+        st.write("- Minimum Potassium required:", x['K'].min())
+        st.write("- Average Potassium required:", x['K'].mean())
+        st.write("- Maximum Potassium required:", x['K'].max())
+    with temp:
+        st.subheader("Temperature")
+        st.write("- Minimum Temperature required: {:.2f}".format(x['temperature'].min()))
+        st.write("- Average Temperature required: {:.2f}".format(x['temperature'].mean()))
+        st.write("- Maximum Temperature required: {:.2f}".format(x['temperature'].max()))
+    st.write("---------------------------------------------")
+    hum, pH = st.columns(2)
+    with hum:
+        st.subheader("Humidity")
+        st.write("- Minimum Humidity required: {:.2f}".format(x['humidity'].min()))
+        st.write("- Average Humidity required: {:.2f}".format(x['humidity'].mean()))
+        st.write("- Maximum Humidity required: {:.2f}".format(x['humidity'].max()))
+    with pH:
+        st.subheader("pH")
+        st.write("- Minimum pH required: {:.2f}".format(x['ph'].min()))
+        st.write("- Average pH required: {:.2f}".format(x['ph'].mean()))
+        st.write("- Maximum pH required: {:.2f}".format(x['ph'].max()))
+    st.write("---------------------------------------------")
+    st.subheader("Rainfall")
+    st.write("- Minimum Rainfall required: {:.2f}".format(x['rainfall'].min()))
+    st.write("- Average Rainfall required: {:.2f}".format(x['rainfall'].mean()))
+    st.write("- Maximum Rainfall required: {:.2f}".format(x['rainfall'].max()))
+
+
+# Visualization of the crop requirements
+def viz():
+    fig,ax=plt.subplots(7,1,figsize=(25,25))
+    for index,i in enumerate(grouped.columns[1:]):
+        sns.barplot(data=grouped,x='label',y=i,ax=ax[index])
+        plt.suptitle("Comparision of Mean Attributes of various classes",size=25)
+        plt.xlabel("")
+        
+    return st.write(fig)
+ 
+# Prediction function   
+def predict_ensemble(data):
+    # Preprocess the data
+    X = np.array([data])
+    
+    # Make predictions using each model
+    predictions = []
+    for model in models:
+        pred = model.predict(X)
+        predictions.append(pred)
+    
+    # Ensemble by averaging predictions
+    ensemble_predictions = sum(predictions) / len(models)
+    
+    # Round ensemble predictions to the nearest integer 
+    ensemble_predictions = ensemble_predictions.round().astype(int)
+    
+    # Decode the predictions
+    decoded_predictions = encoder.inverse_transform(ensemble_predictions)
+    
+    return decoded_predictions[0]
+
+# Function to get user input and pass it to predictions function
+def get_user_input():
+    n = st.number_input("Ratio of Nitrogen in Soil:", min_value=1.0, max_value=140.0)
+    p = st.number_input("Ratio of Phosphorus in Soil:", min_value=1.0, max_value=145.0)
+    k = st.number_input("Ratio of Potassium in Soil:", min_value=1.0, max_value=205.0)
+    temperature = st.number_input("Temperature(°C):", min_value=6.0, max_value=43.7)
+    humidity = st.number_input("Relative humdity in %:", min_value=10.0, max_value=100.0)
+    ph = st.number_input("pH value of the Soil:", min_value=1.0, max_value=14.0)
+    rainfall = st.number_input("Rainfall in mm:", min_value=10.0, max_value=300.0)
+
+    # Combine input values into a Python list
+    input_data = [n, p, k, temperature, humidity, ph, rainfall]
+    return input_data
+
+# Function to read the contents of the Jupyter Notebook file
+def read_notebook_file(file_path):
+    with open(file_path, "r") as f:
+        notebook_content = f.read()
+    return notebook_content
+
+notebook_file_path = "crop-recommedation-agri-project.ipynb"  
+
+# Read the contents of the notebook file
+notebook_content = read_notebook_file(notebook_file_path)
+
+# Function to interact with ChatGPT
+def get_completion(prompt, model='gpt-3.5-turbo'):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model = model,
+        messages = messages,
+        temperature = 0
+        )
+    
+    return response.choices[0].message["content"]
+    
+def create_prompt(crop):
+    prompt = f"""
+    Optimal farming conditions and best practices for the crop delimited by 
+    triple backticks ```{crop}```
+    """
+    return prompt
+
+def create_promptt(crop):
+    prompt = f"""
+    possible crop disease outbreaks for the crop delimited by 
+    triple backticks and advise on control measures ```{crop}```
+    """
+    return prompt
+
+def run():
+    # Sidebar navigation
+    page = st.sidebar.radio("Navigation", ["Home", "Summary Statistics", "Exploratory Data Analysis", "Inference", "Prompting"])
+    
+    if page == "Home":
+        st.title("Crop Recommendation")
+        st.header('Dataset Overview')
+        head, stats = st.columns(2)
+        
+        with head:
+            st.write(data.head(8))
+            
+        with stats:
+            st.write(data.describe())
+    
+    elif page == "Summary Statistics":
+        st.title("Summary statistics for each crop")
+        selected_crop = st.selectbox("Select a crop:", crop_labels)
+        summary(selected_crop)
+        
+    elif page == "Exploratory Data Analysis":
+        st.title("Exploratory Data Analysis")
+        viz()
+        
+        st.subheader('Observations')
+        st.markdown('''
+                - Cotton requires most Nitrogen.
+                - Apple requires most Phosphorus.
+                - Grapes require most Potassium
+                - Papaya requires a hot climate.
+                - Coconut requires a humid climate.
+                - Chickpea requires high pH in soil.
+                - Rice requires huge amount of Rainfall.
+                ''')
+        st.write('For more EDA download the notebook here:')
+        st.download_button(label='Download notebook', data=notebook_content, file_name="crop-recommedation-agri-project.ipynb")
+        
+    elif page == "Inference":
+        st.title("Model Inference")
+        # Get user input
+        input_data = get_user_input()
+
+        # Make predictions using the input data
+        if st.button("Predict"):
+            prediction = predict_ensemble(input_data)
+            st.write("The Suggested Crop for the Given Climatic Condition is: ", prediction)
+            prompt = create_prompt(prediction)
+            st.subheader("More info")
+            st.write(get_completion(prompt))
+            page = st.sidebar.radio("Extras", ["Possible diseases"])
+
+            if page:
+                promptt = create_promptt(prediction)
+                st.title('Disease outbreak and mitigation')
+                st.write(get_completion(promptt))
+
+    elif page == "Prompting":
+        st.title("Chat Area")
+        prompt = st.text_area("Enter your prompt here")
+
+        if st.button("Submit"):
+            if prompt:
+                response = get_completion(prompt)
+                st.write(response)
+
+
+if __name__ == '__main__':
+    run()
