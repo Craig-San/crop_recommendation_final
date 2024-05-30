@@ -237,19 +237,19 @@ def run():
         # Make predictions using the input data
         if st.button("Predict"):
             prediction = predict_ensemble(input_data)
-            st.write("The Suggested Crop for the Given Climatic Condition is: ", prediction)
+            st.write("The Suggested Crop for the Given Climatic Conditions is: ", prediction)
             prompt = create_prompt(prediction)
-            st.subheader("More info")
+            st.subheader("Find Out More About: ", prediction)
             st.write(get_completion(prompt))
-            page = st.sidebar.radio("Extras", ["Possible diseases"])
+            page = st.sidebar.radio("Extras", ["Possible Diseases"])
 
             if page:
                 promptt = create_promptt(prediction)
-                st.title('Possible Diseases and Mitigation')
+                st.title('Possible Diseases and Mitigation Measures')
                 st.write(get_completion(promptt))
 
     elif page == "Q&A Section":
-        st.title("Chat Area")
+        st.title("Question & Answer Section")
         prompt = st.text_area("For all your crop related questions")
 
         if st.button("Submit"):
