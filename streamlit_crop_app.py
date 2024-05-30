@@ -15,6 +15,7 @@ def check_password():
     def login_form():
         """Form with widgets to collect user information"""
         with st.form("Credentials"):
+            st.text("Crop Recommendation and Advisory System!")
             st.text("Please Enter Your Credentials")
             st.text_input("Username", key="username")
             st.text_input("Password", type="password", key="password")
@@ -61,7 +62,7 @@ encoder = pickle.load(open("label_encoder.pkl", 'rb'))
 models = [rf_classifier, xgb_classifier]
 
 st.set_page_config(
-    page_title = 'Crop Recommendation',
+    page_title = 'Crop Recommendation and Advisor',
     page_icon = '✅',
     layout = 'wide'
     )
@@ -195,7 +196,7 @@ def create_promptt(crop):
 
 def run():
     # Sidebar navigation
-    page = st.sidebar.radio("Navigation", ["Home", "Summary Statistics", "Exploratory Data Analysis", "Inference", "Prompting"])
+    page = st.sidebar.radio("Navigation", ["Home", "Summary Statistics", "Exploratory Data Analysis", "Prediction", "Q&A Section"])
     
     if page == "Home":
         st.title("Crop Recommendation")
@@ -227,11 +228,9 @@ def run():
                 - Chickpea requires high pH in soil.
                 - Rice requires huge amount of Rainfall.
                 ''')
-        st.write('For more EDA download the notebook here:')
-        st.download_button(label='Download notebook', data=notebook_content, file_name="crop-recommedation-agri-project.ipynb")
         
-    elif page == "Inference":
-        st.title("Model Inference")
+    elif page == "Prediction":
+        st.title("Model Prediction")
         # Get user input
         input_data = get_user_input()
 
@@ -246,12 +245,12 @@ def run():
 
             if page:
                 promptt = create_promptt(prediction)
-                st.title('Disease outbreak and mitigation')
+                st.title('Possible Diseases and Mitigation')
                 st.write(get_completion(promptt))
 
-    elif page == "Prompting":
+    elif page == "Q&A Section":
         st.title("Chat Area")
-        prompt = st.text_area("Enter your prompt here")
+        prompt = st.text_area("For all your crop related questions")
 
         if st.button("Submit"):
             if prompt:
