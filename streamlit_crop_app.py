@@ -146,9 +146,9 @@ def predict_ensemble(data):
 
 # Function to get user input and pass it to predictions function
 def get_user_input():
-    n = st.number_input("Ratio of Nitrogen in Soil:", min_value=1.0, max_value=140.0)
-    p = st.number_input("Ratio of Phosphorus in Soil:", min_value=1.0, max_value=145.0)
-    k = st.number_input("Ratio of Potassium in Soil:", min_value=1.0, max_value=205.0)
+    n = st.number_input("Ratio of Nitrogen in Soil:", min_value=20.0, max_value=140.0)
+    p = st.number_input("Ratio of Phosphorus in Soil:", min_value=15.0, max_value=145.0)
+    k = st.number_input("Ratio of Potassium in Soil:", min_value=150.0, max_value=205.0)
     temperature = st.number_input("Temperature(°C):", min_value=6.0, max_value=43.7)
     humidity = st.number_input("Relative humdity in %:", min_value=10.0, max_value=100.0)
     ph = st.number_input("pH value of the Soil:", min_value=1.0, max_value=14.0)
