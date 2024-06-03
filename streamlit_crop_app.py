@@ -259,7 +259,7 @@ def run():
                 st.write(response)
 
     elif page == "Reports":
-        # Function to create a database connection
+        st.title("Soil Report")
         def create_connection():
             return mysql.connector.connect(
                 host="127.0.0.1:3306",      # Replace with your host
@@ -288,9 +288,8 @@ def run():
         else:
             st.write("No data found.")
         
-                st.title("Soil Report")
-       
-
+        
+        # Function to create a database connection
 
 if __name__ == '__main__':
     run()
