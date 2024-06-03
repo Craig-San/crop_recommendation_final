@@ -196,7 +196,7 @@ def create_promptt(crop):
 
 def run():
     # Sidebar navigation
-    page = st.sidebar.radio("Navigation", ["Home", "Summary Statistics", "Exploratory Data Analysis", "Prediction", "Q&A Section"])
+    page = st.sidebar.radio("Navigation", ["Home", "Summary Statistics", "Exploratory Data Analysis", "Prediction", "Q&A Section", "Reports"])
     
     if page == "Home":
         st.title("Crop Recommendation")
@@ -256,6 +256,10 @@ def run():
             if prompt:
                 response = get_completion(prompt)
                 st.write(response)
+
+    elif page == "Reports":
+        st.title("Soil Report")
+        
 
 
 if __name__ == '__main__':
