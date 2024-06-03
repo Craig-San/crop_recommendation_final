@@ -260,14 +260,15 @@ def run():
 
     elif page == "Reports":
         st.title("Soil Report")
+        
         def create_connection():
             return mysql.connector.connect(
-                host="127.0.0.1:3306",      # Replace with your host
-                user="user",  # Replace with your username
-                password="12345678",  # Replace with your password
-                database="new connection"   # Replace with your database name
-            )
-        
+                host=os.getenv("127.0.0.1:3306"),
+                user=os.getenv("user"),
+                password=os.getenv("12345678"),
+                database=os.getenv("new connection")
+    )
+
         # Function to fetch data from the database
         def fetch_data():
             connection = create_connection()
@@ -277,9 +278,9 @@ def run():
             cursor.close()
             connection.close()
             return rows
-        
+
         data = fetch_data()
-        
+
         if data:
             for row in data:
                 st.write(f"**Feature**: {row[0]}")
@@ -288,8 +289,6 @@ def run():
         else:
             st.write("No data found.")
         
-        
-        # Function to create a database connection
 
 if __name__ == '__main__':
     run()
