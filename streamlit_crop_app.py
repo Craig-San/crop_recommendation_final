@@ -1,3 +1,4 @@
+import mysql.connector
 import pickle
 import streamlit as st 
 import numpy as np
@@ -258,7 +259,36 @@ def run():
                 st.write(response)
 
     elif page == "Reports":
-        st.title("Soil Report")
+        # Function to create a database connection
+        def create_connection():
+            return mysql.connector.connect(
+                host="127.0.0.1:3306",      # Replace with your host
+                user="user",  # Replace with your username
+                password="12345678",  # Replace with your password
+                database="new connection"   # Replace with your database name
+            )
+        
+        # Function to fetch data from the database
+        def fetch_data():
+            connection = create_connection()
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM CropFeatures")
+            rows = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return rows
+        
+        data = fetch_data()
+        
+        if data:
+            for row in data:
+                st.write(f"**Feature**: {row[0]}")
+                st.write(f"**Value**: {row[1]}")
+                st.write("---")
+        else:
+            st.write("No data found.")
+        
+                st.title("Soil Report")
        
 
 
