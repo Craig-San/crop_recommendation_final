@@ -259,7 +259,12 @@ def run():
 
     elif page == "Reports":
         st.title("Soil Report")
-        
+        prompt = st.text_area("For all your crop related questions")
+
+        if st.button("Submit"):
+            if prompt:
+                response = get_completion(prompt)
+                st.write(response)
 
 
 if __name__ == '__main__':
