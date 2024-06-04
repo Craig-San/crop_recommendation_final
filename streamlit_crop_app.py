@@ -303,7 +303,24 @@ def run():
         
         
         st.title("NPK Values Pie Chart")
+        npk_data = fetch_npk_data(limit=3)
 
+        if npk_data:
+            features = [row[0] for row in npk_data]
+            values = [float(row[1]) for row in npk_data]  # Convert values to float for plotting
+        
+            # Create a DataFrame for plotting
+            df = {
+                'Feature': features,
+                'Value': values
+            }
+        
+            # Create and display the pie chart
+            fig = px.pie(df, names='Feature', values='Value', title='NPK Values Distribution (First 3 Rows)')
+            st.plotly_chart(fig)
+        else:
+            st.write("No NPK data found or an error occurred.")
+            
         # Fetch NPK data
         data = fetch_data()
 
@@ -316,10 +333,6 @@ def run():
                 'Feature': features,
                 'Value': values
             }
-        
-            # Create and display the pie chart
-            fig = px.pie(df, names='Feature', values='Value', title='Crop Features Distribution')
-            st.plotly_chart(fig)
         
             st.subheader("Existing Crop Features")
             for row in data:
