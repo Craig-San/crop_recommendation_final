@@ -271,8 +271,8 @@ def run():
     elif page == "Reports":
         st.title("Soil Assessment Report")
         
-        ngrok_url = "5.tcp.eu.ngrok.io"
-        ngrok_port = 13470
+        ngrok_url = "4.tcp.eu.ngrok.io"
+        ngrok_port = 12772
         db_user = "root"
         db_password = "12345678"
         db_name = "crop-reco"
