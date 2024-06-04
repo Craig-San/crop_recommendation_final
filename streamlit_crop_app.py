@@ -265,7 +265,7 @@ def run():
         ngrok_port = 13470
         db_user = "root"
         db_password = "12345678"
-        db_name = "sys"
+        db_name = "crop-reco"
 
         # Function to create a database connection using ngrok URL
         def create_connection():
