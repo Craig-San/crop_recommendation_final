@@ -262,7 +262,7 @@ def run():
         st.title("Soil Report")
         
         ngrok_url = "0.tcp.eu.ngrok.io"
-        ngrok_port = 11331
+        ngrok_port = 13470
         ngrok_port = 4040  # Replace with the actual port provided by ngrok
         db_user = "root"
         db_password = "12345678"
