@@ -300,35 +300,6 @@ def run():
                 st.error(f"Error: {err}")
                 return None
         
-        # Function to insert data into the database
-        def insert_data(feature, value):
-            connection = create_connection()
-            if connection is None:
-                return
-        
-            try:
-                cursor = connection.cursor()
-                cursor.execute("INSERT INTO CropFeatures (Feature, Value) VALUES (%s, %s)", (feature, value))
-                connection.commit()
-                cursor.close()
-                connection.close()
-                st.success(f"Inserted {feature}: {value} into the database")
-            except mysql.connector.Error as err:
-                st.error(f"Error: {err}")
-
-        
-        # Form to insert new data
-        with st.form(key='insert_form'):
-            feature = st.text_input("Feature")
-            value = st.text_input("Value")
-            submit_button = st.form_submit_button(label='Insert')
-        
-            if submit_button:
-                if feature and value:
-                    insert_data(feature, value)
-                else:
-                    st.error("Both fields are required")
-        
         # Fetch and display data
         data = fetch_data()
         
