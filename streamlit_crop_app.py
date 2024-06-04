@@ -269,6 +269,7 @@ def run():
                 database=os.getenv("new connection")
     )
 
+        # Function to fetch data from the database
         def fetch_data():
             try:
                 connection = create_connection()
@@ -281,11 +282,37 @@ def run():
             except mysql.connector.Error as err:
                 st.error(f"Error: {err}")
                 return None
-
-        data = None
+        
+        # Function to insert data into the database
+        def insert_data(feature, value):
+            try:
+                connection = create_connection()
+                cursor = connection.cursor()
+                cursor.execute("INSERT INTO CropFeatures (Feature, Value) VALUES (%s, %s)", (feature, value))
+                connection.commit()
+                cursor.close()
+                connection.close()
+                st.success(f"Inserted {feature}: {value} into the database")
+            except mysql.connector.Error as err:
+                st.error(f"Error: {err}")
+        
+        # Form to insert new data
+        with st.form(key='insert_form'):
+            feature = st.text_input("Feature")
+            value = st.text_input("Value")
+            submit_button = st.form_submit_button(label='Insert')
+        
+            if submit_button:
+                if feature and value:
+                    insert_data(feature, value)
+                else:
+                    st.error("Both fields are required")
+        
+        # Fetch and display data
         data = fetch_data()
-
+        
         if data:
+            st.subheader("Existing Crop Features")
             for row in data:
                 st.write(f"**Feature**: {row[0]}")
                 st.write(f"**Value**: {row[1]}")
