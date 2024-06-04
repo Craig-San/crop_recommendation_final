@@ -269,15 +269,19 @@ def run():
                 database=os.getenv("new connection")
     )
 
-        # Function to fetch data from the database
         def fetch_data():
-            connection = create_connection()
-            cursor = connection.cursor()
-            cursor.execute("SELECT * FROM CropFeatures")
-            rows = cursor.fetchall()
-            cursor.close()
-            connection.close()
-            return rows
+            try:
+                connection = create_connection()
+                cursor = connection.cursor()
+                cursor.execute("SELECT * FROM CropFeatures")
+                rows = cursor.fetchall()
+                cursor.close()
+                connection.close()
+                return rows
+            except mysql.connector.Error as err:
+                st.error(f"Error: {err}")
+                return None
+
 
         data = fetch_data()
 
@@ -287,8 +291,7 @@ def run():
                 st.write(f"**Value**: {row[1]}")
                 st.write("---")
         else:
-            st.write("No data found.")
-        
+            st.write("No data found or an error occurred.")
 
 if __name__ == '__main__':
     run()
