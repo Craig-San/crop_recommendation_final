@@ -282,7 +282,7 @@ def run():
                     user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
                     password=os.getenv("12345678"),
                     database=os.getenv("crop-reco"),
-                    port=int(os.getenv("DB_PORT", 1433))  # Default port is 3306 if not specified
+                    port=int(os.getenv("DB_PORT", 3306))  # Default port is 3306 if not specified
                 )
                 return connection
             except mysql.connector.Error as err:
