@@ -263,10 +263,10 @@ def run():
         
         def create_connection():
             return mysql.connector.connect(
-                host=os.getenv("127.0.0.1:3306"),
-                user=os.getenv("user"),
+                host=os.getenv("34.122.18.217"),
+                user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
                 password=os.getenv("12345678"),
-                database=os.getenv("new connection")
+                database=os.getenv("crop-reco")
     )
 
         # Function to fetch data from the database
