@@ -301,8 +301,6 @@ def run():
                 st.error(f"Error: {err}")
                 return None
         
-        # Fetch and display data
-        data = fetch_data()
         
         npk_data = fetch_npk_data()
 
