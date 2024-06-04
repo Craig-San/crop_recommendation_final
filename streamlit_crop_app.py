@@ -364,7 +364,7 @@ def run():
         
         if st.button("Analyse"):
             prompty = create_prompt(npk_data)
-            response = get_completition(prompty)
+            response = get_completion(prompty)
             st.write(response)
 
 
