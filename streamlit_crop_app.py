@@ -267,7 +267,7 @@ def run():
                 user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
                 password=os.getenv("12345678"),
                 database=os.getenv("crop-reco")
-                port=int(os.getenv("3306"))
+                port=int(os.getenv(3306))
     )
 
         # Function to fetch data from the database
