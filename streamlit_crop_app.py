@@ -71,7 +71,7 @@ st.set_page_config(
 
 # Summary statistics for each crop
 def summary(crop):
-    x = data_csv[data['label'] == crop]
+    x = data_csv[data_csv['label'] == crop]
     nitrogen, phosp = st.columns(2)
     with nitrogen:
         st.subheader("Nitrogen")
