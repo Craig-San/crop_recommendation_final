@@ -359,10 +359,10 @@ def run():
             """
             return prompt
 
-        if st.button("Analyse"):
-            if prompt:
-                response = get_completion(prompt)
-                st.write(response)
+            if st.button("Analyse"):
+                if prompt:
+                    response = get_completion(prompt)
+                    st.write(response)
 
 
         last_four_features = fetch_last_four_features()
