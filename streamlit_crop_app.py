@@ -261,7 +261,7 @@ def run():
     elif page == "Reports":
         st.title("Soil Report")
         
-        ngrok_url = "tcp://0.tcp.eu.ngrok.io:11331 -> localhost:3306"
+        ngrok_url = "tcp://0.tcp.eu.ngrok.io:11331"
         ngrok_port = 4040  # Replace with the actual port provided by ngrok
         db_user = "root"
         db_password = "12345678"
