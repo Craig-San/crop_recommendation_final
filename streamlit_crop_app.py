@@ -189,12 +189,20 @@ def create_prompt(crop):
     """
     return prompt
 
+def create_anal(npk_data):
+    prompt = f"""
+    Comment on the values of the npk data provided, recommending valuable advise regarding soil nutrient ```{npk_data}```
+    """
+    return prompt
+
 def create_promptt(crop):
     prompt = f"""
     possible crop disease outbreaks for the crop delimited by 
     triple backticks and advise on control measures ```{crop}```
     """
     return prompt
+
+
 
 def run():
     # Sidebar navigation
@@ -333,7 +341,7 @@ def run():
                     return None
         
         
-        st.title("NPK Values Pie Chart")
+        st.subheader("NPK Values Pie Chart")
         
         npk_data = fetch_npk_data(limit=3)
 
@@ -353,16 +361,11 @@ def run():
         else:
             st.write("No NPK data found or an error occurred.")
 
-        def create_anal(npk_data):
-            prompt = f"""
-            Comment on the values of the npk data provided, recommending valuable advise regarding soil nutrient ```{npk_data}```
-            """
-            return prompt
-
-            if st.button("Analyse"):
-                if prompt:
-                    response = get_completion(prompt)
-                    st.write(response)
+        
+        if st.button("Analyse"):
+            if prompt:
+                response = create_anal(prompt)
+                st.write(response)
 
 
         last_four_features = fetch_last_four_features()
