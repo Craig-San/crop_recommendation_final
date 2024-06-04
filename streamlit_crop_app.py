@@ -264,6 +264,20 @@ def run():
         def create_connection():
             try:
                 connection = mysql.connector.connect(
+                    user=os.getenv("DB_USER","canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
+                    password=os.getenv("DB_PASSWORD", "12345678"),
+                    database=os.getenv("DB_NAME", "crop-reco"),
+                    unix_socket=os.getenv("CLOUD_SQL_CONNECTION_NAME", "/cloudsql/My Project 92439:us-cental1 (lowa):crop-recommendation-final"),
+                    charset='utf8mb4'
+                )
+                return connection
+            except mysql.connector.Error as err:
+                st.error(f"Error: Could not connect to Google Cloud SQL instance. {err}")
+                return None
+                
+        def create_connection():
+            try:
+                connection = mysql.connector.connect(
                     host=os.getenv("34.122.18.217"),
                     user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
                     password=os.getenv("12345678"),
