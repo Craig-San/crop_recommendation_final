@@ -318,23 +318,24 @@ def run():
                     
          # Function to fetch data from the database
         def fetch_data():
-            connection = create_connection()
-            if connection is None:
-                return None
-        
-            try:
-                cursor = connection.cursor()
-                cursor.execute("SELECT * FROM CropFeatures")
-                rows = cursor.fetchall()
-                cursor.close()
-                connection.close()
-                return rows
-            except mysql.connector.Error as err:
-                st.error(f"Error: {err}")
-                return None
+                connection = create_connection()
+                if connection is None:
+                    return None
+            
+                try:
+                    cursor = connection.cursor()
+                    cursor.execute("SELECT * FROM CropFeatures")
+                    rows = cursor.fetchall()
+                    cursor.close()
+                    connection.close()
+                    return rows
+                except mysql.connector.Error as err:
+                    st.error(f"Error: {err}")
+                    return None
         
         
         st.title("NPK Values Pie Chart")
+        
         npk_data = fetch_npk_data(limit=3)
 
         if npk_data:
@@ -352,6 +353,7 @@ def run():
             st.plotly_chart(fig)
         else:
             st.write("No NPK data found or an error occurred.")
+            
         last_four_features = fetch_last_four_features()
 
         if last_four_features:
@@ -369,6 +371,7 @@ def run():
             st.plotly_chart(fig)
         else:
             st.write("No data found or an error occurred.")
+            
         # Fetch NPK data
         data = fetch_data()
 
