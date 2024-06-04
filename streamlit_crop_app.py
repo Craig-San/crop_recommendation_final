@@ -263,7 +263,6 @@ def run():
         
         ngrok_url = "5.tcp.eu.ngrok.io"
         ngrok_port = 13470
-        ngrok_port = 4040  # Replace with the actual port provided by ngrok
         db_user = "root"
         db_password = "12345678"
         db_name = "new connection"
