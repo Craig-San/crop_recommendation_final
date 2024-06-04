@@ -283,7 +283,22 @@ def run():
             except mysql.connector.Error as err:
                 st.error(f"Error: Could not connect to MySQL server. {err}")
                 return None
+        def fetch_npk_data(limit=3):  # Add a parameter to limit the number of rows fetched
+            connection = create_connection()
+            if connection is None:
+                return None
         
+            try:
+                cursor = connection.cursor()
+                cursor.execute("SELECT Feature, Value FROM CropFeatures WHERE Feature IN ('N', 'P', 'K') LIMIT %s", (limit,))
+                npk_data = cursor.fetchall()
+                cursor.close()
+                connection.close()
+                return npk_data
+            except mysql.connector.Error as err:
+                st.error(f"Error: {err}")
+                return None
+                
         # Function to fetch data from the database
         def fetch_data():
             connection = create_connection()
