@@ -261,34 +261,27 @@ def run():
     elif page == "Reports":
         st.title("Soil Report")
         
+        ngrok_url = "tcp://0.tcp.eu.ngrok.io:11331 -> localhost:3306"
+        ngrok_port = 4040  # Replace with the actual port provided by ngrok
+        db_user = "root"
+        db_password = "12345678"
+        db_name = "new connection"
+
+        # Function to create a database connection using ngrok URL
         def create_connection():
             try:
                 connection = mysql.connector.connect(
-                    user=os.getenv("DB_USER","canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
-                    password=os.getenv("DB_PASSWORD", "12345678"),
-                    database=os.getenv("DB_NAME", "crop-reco"),
-                    unix_socket=os.getenv("CLOUD_SQL_CONNECTION_NAME", "/cloudsql/My Project 92439:us-cental1 (lowa):crop-recommendation-final"),
-                    charset='utf8mb4'
-                )
-                return connection
-            except mysql.connector.Error as err:
-                st.error(f"Error: Could not connect to Google Cloud SQL instance. {err}")
-                return None
-                
-        def create_connection():
-            try:
-                connection = mysql.connector.connect(
-                    host=os.getenv("34.122.18.217"),
-                    user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
-                    password=os.getenv("12345678"),
-                    database=os.getenv("crop-reco"),
-                    port=int(os.getenv("DB_PORT", 3306))  # Default port is 3306 if not specified
+                    host=ngrok_url,
+                    port=ngrok_port,
+                    user=db_user,
+                    password=db_password,
+                    database=db_name
                 )
                 return connection
             except mysql.connector.Error as err:
                 st.error(f"Error: Could not connect to MySQL server. {err}")
                 return None
-
+        
         # Function to fetch data from the database
         def fetch_data():
             connection = create_connection()
@@ -322,6 +315,9 @@ def run():
             except mysql.connector.Error as err:
                 st.error(f"Error: {err}")
         
+        # Streamlit app
+        st.title("Crop Features for Maize Growth")
+        
         # Form to insert new data
         with st.form(key='insert_form'):
             feature = st.text_input("Feature")
@@ -345,6 +341,5 @@ def run():
                 st.write("---")
         else:
             st.write("No data found or an error occurred.")
-
 if __name__ == '__main__':
     run()
