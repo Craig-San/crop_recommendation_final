@@ -1,4 +1,5 @@
 import mysql.connector
+import plotly.express as px
 import pickle
 import streamlit as st 
 import numpy as np
@@ -301,9 +302,23 @@ def run():
                 return None
         
         # Fetch and display data
-        data = fetch_data()
+        data = fetch_data(
+
         
         if data:
+            features = [row[0] for row in data]
+            values = [float(row[1]) for row in data]  # Convert values to float for plotting
+
+            # Create a DataFrame for plotting
+            df = {
+                'Feature': features,
+                'Value': values
+            }
+        
+            # Create and display the pie chart
+            fig = px.pie(df, names='Feature', values='Value', title='Crop Features Distribution')
+            st.plotly_chart(fig)
+
             st.subheader("Existing Crop Features")
             for row in data:
                 st.write(f"**Feature**: {row[0]}")
