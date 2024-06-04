@@ -282,7 +282,7 @@ def run():
                 st.error(f"Error: {err}")
                 return None
 
-
+        data = None
         data = fetch_data()
 
         if data:
