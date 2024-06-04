@@ -278,11 +278,12 @@ def run():
                     password=db_password,
                     database=db_name
                 )
-                st.write("Connected to the database successfully")
+        
                 return connection
             except mysql.connector.Error as err:
                 st.error(f"Error: Could not connect to MySQL server. {err}")
                 return None
+                
         def fetch_npk_data(limit=3):  # Add a parameter to limit the number of rows fetched
             connection = create_connection()
             if connection is None:
@@ -299,7 +300,23 @@ def run():
                 st.error(f"Error: {err}")
                 return None
                 
-        # Function to fetch data from the database
+         def fetch_last_four_features():
+                connection = create_connection()
+                if connection is None:
+                    return None
+            
+                try:
+                    cursor = connection.cursor()
+                    cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
+                    last_four_features = cursor.fetchall()
+                    cursor.close()
+                    connection.close()
+                    return last_four_features
+                except mysql.connector.Error as err:
+                    st.error(f"Error: {err}")
+                    return None  
+                    
+         # Function to fetch data from the database
         def fetch_data():
             connection = create_connection()
             if connection is None:
@@ -335,7 +352,23 @@ def run():
             st.plotly_chart(fig)
         else:
             st.write("No NPK data found or an error occurred.")
-            
+        last_four_features = fetch_last_four_features()
+
+        if last_four_features:
+            features = [row[0] for row in last_four_features]
+            values = [float(row[1]) for row in last_four_features]  # Convert values to float for plotting
+        
+            # Create a DataFrame for plotting
+            df = {
+                'Feature': features,
+                'Value': values
+            }
+        
+            # Create and display the bar graph
+            fig = px.bar(df, x='Feature', y='Value', title='Last Four Features')
+            st.plotly_chart(fig)
+        else:
+            st.write("No data found or an error occurred.")
         # Fetch NPK data
         data = fetch_data()
 
@@ -343,11 +376,6 @@ def run():
             features = [row[0] for row in data]
             values = [float(row[1]) for row in data]  # Convert values to float for plotting
         
-            # Create a DataFrame for plotting
-            df = {
-                'Feature': features,
-                'Value': values
-            }
         
             st.subheader("Existing Crop Features")
             for row in data:
