@@ -278,6 +278,7 @@ def run():
                     password=db_password,
                     database=db_name
                 )
+                st.write("Connected to the database successfully")
                 return connection
             except mysql.connector.Error as err:
                 st.error(f"Error: Could not connect to MySQL server. {err}")
