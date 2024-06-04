@@ -363,7 +363,7 @@ def run():
 
         
         if st.button("Analyse"):
-            response = create_anal()
+            response = create_anal(npk_data)
             st.write(response)
 
 
