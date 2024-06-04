@@ -352,7 +352,19 @@ def run():
             st.plotly_chart(fig)
         else:
             st.write("No NPK data found or an error occurred.")
-            
+
+        def create_anal(npk_data):
+            prompt = f"""
+            Comment on the values of the npk data provided, recommending valuable advise regarding soil nutrient ```{npk_data}```
+            """
+            return prompt
+
+        if st.button("Analyse"):
+            if prompt:
+                response = get_completion(prompt)
+                st.write(response)
+
+
         last_four_features = fetch_last_four_features()
 
         if last_four_features:
