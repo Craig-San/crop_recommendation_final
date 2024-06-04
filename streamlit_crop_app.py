@@ -304,18 +304,18 @@ def run():
             connection = create_connection()
             if connection is None:
                 return None
+        
             try:
                 cursor = connection.cursor()
-                cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
+                cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY Feature DESC LIMIT 4")
                 last_four_features = cursor.fetchall()
                 cursor.close()
                 connection.close()
                 return last_four_features
             except mysql.connector.Error as err:
                 st.error(f"Error: {err}")
-                return None  
-                    
-         # Function to fetch data from the database
+                return None
+                
         def fetch_data():
                 connection = create_connection()
                 if connection is None:
