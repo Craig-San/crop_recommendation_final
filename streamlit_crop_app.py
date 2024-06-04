@@ -363,9 +363,8 @@ def run():
 
         
         if st.button("Analyse"):
-            if prompt:
-                response = create_anal(prompt)
-                st.write(response)
+            response = create_anal()
+            st.write(response)
 
 
         last_four_features = fetch_last_four_features()
