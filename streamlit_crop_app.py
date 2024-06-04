@@ -362,11 +362,16 @@ def run():
         else:
             st.write("No NPK data found or an error occurred.")
 
-        
+        prompt = create_anal(npk_data)
         if st.button("Analyse"):
-            prompty = create_prompt(npk_data)
-            response = get_completion(prompty)
-            st.write(response)
+            if prompt:
+                response = get_completion(prompt)
+                st.write(response)
+
+        #if st.button("Analyse"):
+        #    prompty = create_prompt(npk_data)
+        #    response = get_completion(prompty)
+        #    st.write(response)
 
 
         last_four_features = fetch_last_four_features()
