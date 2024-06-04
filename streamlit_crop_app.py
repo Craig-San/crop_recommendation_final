@@ -301,10 +301,9 @@ def run():
                 return None
                 
          def fetch_last_four_features():
-            connection = create_connection()
-            if connection is None:
-                return None
-            
+             connection = create_connection()
+             if connection is None:
+                 return None
             try:
                 cursor = connection.cursor()
                 cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
