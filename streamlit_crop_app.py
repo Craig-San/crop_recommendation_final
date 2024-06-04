@@ -301,20 +301,20 @@ def run():
                 return None
                 
          def fetch_last_four_features():
-                connection = create_connection()
-                if connection is None:
-                    return None
+            connection = create_connection()
+            if connection is None:
+                return None
             
-                try:
-                    cursor = connection.cursor()
-                    cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
-                    last_four_features = cursor.fetchall()
-                    cursor.close()
-                    connection.close()
-                    return last_four_features
-                except mysql.connector.Error as err:
-                    st.error(f"Error: {err}")
-                    return None  
+            try:
+                cursor = connection.cursor()
+                cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
+                last_four_features = cursor.fetchall()
+                cursor.close()
+                connection.close()
+                return last_four_features
+            except mysql.connector.Error as err:
+                st.error(f"Error: {err}")
+                return None  
                     
          # Function to fetch data from the database
         def fetch_data():
