@@ -191,7 +191,7 @@ def create_prompt(crop):
 
 def create_anal(npk_data):
     prompt = f"""
-    Comment on the values of the npk data provided with regards to soil fertility as shown on the pie chart delimited by
+    Comment on the values of the npk_data provided with regards to soil fertility as shown on the pie chart delimited by
     triple backticks and recommend valuable advise regarding soil nutrients ```{npk_data}```
     """
     return prompt
