@@ -284,7 +284,7 @@ def run():
                 st.error(f"Error: Could not connect to MySQL server. {err}")
                 return None
                 
-        def fetch_npk_data(limit=3):  # Add a parameter to limit the number of rows fetched
+        def fetch_npk_data(limit=3): # Add a parameter to limit the number of rows fetched
             connection = create_connection()
             if connection is None:
                 return None
@@ -300,10 +300,10 @@ def run():
                 st.error(f"Error: {err}")
                 return None
                 
-         def fetch_last_four_features():
-             connection = create_connection()
-             if connection is None:
-                 return None
+        def fetch_last_four_features():
+            connection = create_connection()
+            if connection is None:
+                return None
             try:
                 cursor = connection.cursor()
                 cursor.execute("SELECT Feature, Value FROM CropFeatures ORDER BY id DESC LIMIT 4")
