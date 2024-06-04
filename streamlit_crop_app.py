@@ -302,8 +302,11 @@ def run():
                 return None
         
         
-        npk_data = fetch_npk_data()
+        st.title("NPK Values Pie Chart")
 
+        # Fetch NPK data
+        npk_data = fetch_npk_data()
+        
         if npk_data:
             features = [row[0] for row in npk_data]
             values = [float(row[1]) for row in npk_data]  # Convert values to float for plotting
