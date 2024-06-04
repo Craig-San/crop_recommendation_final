@@ -262,18 +262,26 @@ def run():
         st.title("Soil Report")
         
         def create_connection():
-            return mysql.connector.connect(
-                host=os.getenv("34.122.18.217"),
-                user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
-                password=os.getenv("12345678"),
-                database=os.getenv("crop-reco")
-                port=int(os.getenv("DB_PORT", "3306"))
-    )
+            try:
+                connection = mysql.connector.connect(
+                    host=os.getenv("34.122.18.217"),
+                    user=os.getenv("canvas-hook-425400-s0:us-central1:crop-recommendation-final"),
+                    password=os.getenv("12345678"),
+                    database=os.getenv("crop-reco"),
+                    port=int(os.getenv("DB_PORT", 3306))  # Default port is 3306 if not specified
+                )
+                return connection
+            except mysql.connector.Error as err:
+                st.error(f"Error: Could not connect to MySQL server. {err}")
+                return None
 
         # Function to fetch data from the database
         def fetch_data():
+            connection = create_connection()
+            if connection is None:
+                return None
+        
             try:
-                connection = create_connection()
                 cursor = connection.cursor()
                 cursor.execute("SELECT * FROM CropFeatures")
                 rows = cursor.fetchall()
@@ -286,8 +294,11 @@ def run():
         
         # Function to insert data into the database
         def insert_data(feature, value):
+            connection = create_connection()
+            if connection is None:
+                return
+        
             try:
-                connection = create_connection()
                 cursor = connection.cursor()
                 cursor.execute("INSERT INTO CropFeatures (Feature, Value) VALUES (%s, %s)", (feature, value))
                 connection.commit()
