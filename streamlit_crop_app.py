@@ -191,7 +191,8 @@ def create_prompt(crop):
 
 def create_anal(npk_data):
     prompt = f"""
-    Comment on the values of the npk data provided with regards to soil fertility as shown on the pie chart, recommending valuable advise regarding soil nutrients ```{npk_data}```
+    Comment on the values of the npk data provided with regards to soil fertility as shown on the pie chart delimited by
+    triple backticks and recommend valuable advise regarding soil nutrients ```{npk_data}```
     """
     return prompt
 
@@ -381,7 +382,7 @@ def run():
             }
         
             # Create and display the bar graph
-            fig = px.bar(df, x='Feature', y='Value', title='Last Four Features')
+            fig = px.bar(df, x='Feature', y='Value', title='Additional Features')
             st.plotly_chart(fig)
         else:
             st.write("No data found or an error occurred.")
