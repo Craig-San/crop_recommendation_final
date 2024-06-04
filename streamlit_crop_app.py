@@ -315,9 +315,7 @@ def run():
                 st.success(f"Inserted {feature}: {value} into the database")
             except mysql.connector.Error as err:
                 st.error(f"Error: {err}")
-        
-        # Streamlit app
-        st.title("Crop Features for Maize Growth")
+
         
         # Form to insert new data
         with st.form(key='insert_form'):
