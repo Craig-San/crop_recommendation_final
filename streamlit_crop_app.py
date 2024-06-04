@@ -304,10 +304,12 @@ def run():
         # Fetch and display data
         data = fetch_data()
         
-        if data:
-            features = [row[0] for row in data]
-            values = [float(row[1]) for row in data]  # Convert values to float for plotting
+        npk_data = fetch_npk_data()
 
+        if npk_data:
+            features = [row[0] for row in npk_data]
+            values = [float(row[1]) for row in npk_data]  # Convert values to float for plotting
+        
             # Create a DataFrame for plotting
             df = {
                 'Feature': features,
@@ -315,15 +317,10 @@ def run():
             }
         
             # Create and display the pie chart
-            fig = px.pie(df, names='Feature', values='Value', title='Crop Features Distribution')
+            fig = px.pie(df, names='Feature', values='Value', title='NPK Values Distribution')
             st.plotly_chart(fig)
-
-            st.subheader("Existing Crop Features")
-            for row in data:
-                st.write(f"**Feature**: {row[0]}")
-                st.write(f"**Value**: {row[1]}")
-                st.write("---")
         else:
-            st.write("No data found or an error occurred.")
+            st.write("No NPK data found or an error occurred.")
+            
 if __name__ == '__main__':
     run()
