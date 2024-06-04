@@ -259,7 +259,7 @@ def run():
                 st.write(response)
 
     elif page == "Reports":
-        st.title("Soil Report")
+        st.title("Soil Assessment Report")
         
         ngrok_url = "5.tcp.eu.ngrok.io"
         ngrok_port = 13470
