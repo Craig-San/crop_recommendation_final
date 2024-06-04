@@ -52,9 +52,9 @@ if not check_password():
 # Main Streamlit app starts here
 
 # Load the data
-data = pd.read_csv("Crop_recommendation.csv")
-grouped = data.groupby(by='label').mean().reset_index()
-crop_labels = data['label'].unique()
+data_csv = pd.read_csv("Crop_recommendation.csv")
+grouped = data_csv.groupby(by='label').mean().reset_index()
+crop_labels = data_csv['label'].unique()
 
 # Load the models and encoders
 rf_classifier = pickle.load(open("rf_classifier_model.pkl", 'rb'))
@@ -70,7 +70,7 @@ st.set_page_config(
 
 # Summary statistics for each crop
 def summary(crop):
-    x = data[data['label'] == crop]
+    x = data_csv[data['label'] == crop]
     nitrogen, phosp = st.columns(2)
     with nitrogen:
         st.subheader("Nitrogen")
@@ -124,9 +124,9 @@ def viz():
     return st.write(fig)
  
 # Prediction function   
-def predict_ensemble(data):
+def predict_ensemble(data_csv):
     # Preprocess the data
-    X = np.array([data])
+    X = np.array([data_csv])
     
     # Make predictions using each model
     predictions = []
@@ -205,10 +205,10 @@ def run():
         head, stats = st.columns(2)
         
         with head:
-            st.write(data.head(8))
+            st.write(data_csv.head(8))
             
         with stats:
-            st.write(data.describe())
+            st.write(data_csv.describe())
     
     elif page == "Summary Statistics":
         st.title("Summary statistics for each crop")
