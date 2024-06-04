@@ -302,8 +302,7 @@ def run():
                 return None
         
         # Fetch and display data
-        data = fetch_data(
-
+        data = fetch_data()
         
         if data:
             features = [row[0] for row in data]
